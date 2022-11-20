@@ -38,6 +38,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -180,9 +181,12 @@ export default function UserPage() {
   const user = useSelector((state) => state.user.login.currentUser);
   const allUser = useSelector((state) => state.user.users?.allUser);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate()
  
   useEffect(() => {
+    if(!user){
+      navigate('/login')
+    }
     getAllUser(user.accessToken, dispatch);
   }, [openEditModal]);
 

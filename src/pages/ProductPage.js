@@ -39,6 +39,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllProduct, getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
 import ModalCreateProduct from 'src/components/modal/ModalCreateProduct';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -184,9 +185,12 @@ export default function ProductPage() {
   const allProduct = useSelector((state)=>state.product.products.allProduct);
   console.log(allProduct);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate()
  
   useEffect(() => {
+    if(!user){
+      navigate('/login')
+    }
     getAllUser(user.accessToken, dispatch);
     getAllProduct(dispatch)
   }, [openEditModal]);
