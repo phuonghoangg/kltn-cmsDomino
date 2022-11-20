@@ -36,7 +36,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllUser, updateUser } from 'src/redux/apiRequest';
+import { getAllProduct, getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
 
 // ----------------------------------------------------------------------
@@ -94,7 +94,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function ProductPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
 
   const [userEdit, setUserEdit] = useState();
@@ -179,11 +179,14 @@ export default function UserPage() {
 
   const user = useSelector((state) => state.user.login.currentUser);
   const allUser = useSelector((state) => state.user.users?.allUser);
+  const allProduct = useSelector((state)=>state.product.products.allProduct);
+  console.log(allProduct);
   const dispatch = useDispatch();
 
  
   useEffect(() => {
     getAllUser(user.accessToken, dispatch);
+    getAllProduct(dispatch)
   }, [openEditModal]);
 
   const handleOpenEditModal = (item) => {
@@ -235,13 +238,13 @@ export default function UserPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={allUser?.length}
+                  rowCount={allProduct?.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {allUser?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                  {allProduct?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
                     const selectedUser = selected.indexOf(item?.username) !== -1;
 
                     return (
@@ -309,7 +312,7 @@ export default function UserPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={allUser?.length}
+            count={allProduct?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

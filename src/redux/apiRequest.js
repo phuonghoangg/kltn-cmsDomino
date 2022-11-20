@@ -1,5 +1,6 @@
 import axios from "axios";
-import { loginFail, loginStart, loginSuccess, logOutFail, logOutStart, logOutSuccess } from "./userSlice";
+import { getAllProductFail, getAllProductStart, getAllProductSuccess } from "./productSlice";
+import { getAllUserFail, getAllUserStart, getAllUserSuccess, loginFail, loginStart, loginSuccess, logOutFail, logOutStart, logOutSuccess, registerFail, registerStart, registerSuccess } from "./userSlice";
 
 
 const host = 'http://localhost:9000'
@@ -30,3 +31,38 @@ export const logoutUser = async(accessToken,user,dispatch)=>{
         dispatch(logOutFail())
     }
 }
+
+export const getAllUser = async(accessToken,dispatch) =>{
+    dispatch(getAllUserStart())
+    try {
+        const res = await axios.get(`${host}/v1/user`,{
+            headers: {token: `Bearer ${accessToken}`}
+        })
+        dispatch(getAllUserSuccess(res.data))
+    } catch (error) {
+        dispatch(getAllUserFail())
+    }
+}
+
+export const updateUser = async(id,accessToken,userUpdate,dispatch) =>{
+    dispatch(registerStart())
+    try {
+       await axios.put(`${host}/v1/user/${id}`,userUpdate,{
+            headers: {token: `Bearer ${accessToken}`}
+        })
+        dispatch(registerSuccess())
+    } catch (error) {
+        dispatch(registerFail())
+    }
+}
+
+export const getAllProduct = async (dispatch) =>{
+    dispatch(getAllProductStart())
+    try {
+        const res = await axios.get(`${host}/v2/product`);
+        dispatch(getAllProductSuccess(res.data));
+    } catch (error) {
+        dispatch(getAllProductFail())
+    }
+}
+
