@@ -38,15 +38,16 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProduct, getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
+import ModalCreateProduct from 'src/components/modal/ModalCreateProduct';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'username', label: 'Username', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'phone', label: 'Phone', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: false },
+  { id: 'ingredient', label: 'Ingredient', alignRight: false },
+  { id: 'type', label: 'Type', alignRight: false },
   { id: '' },
 ];
 
@@ -96,6 +97,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function ProductPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openCreateProductModal, setOpenCreateProductModal] = useState(false);
 
   const [userEdit, setUserEdit] = useState();
 
@@ -196,6 +198,10 @@ export default function ProductPage() {
     setPhone(item.phone)
     setIdEdit(item._id)
   };
+
+  const handleOpenProductCreate = () =>{
+    setOpenCreateProductModal(true)
+  }
   const handleClose = () => {
     setOpenEditModal(false);
   };
@@ -212,6 +218,7 @@ export default function ProductPage() {
     updateUser(idEdit,user.accessToken,newUpdate,dispatch)
     setOpenEditModal(false)
   }
+ 
   return (
     <>
       <Helmet>
@@ -223,8 +230,8 @@ export default function ProductPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
+          <Button onClick={handleOpenProductCreate} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+            New Product
           </Button>
         </Stack>
 
@@ -245,25 +252,28 @@ export default function ProductPage() {
                 />
                 <TableBody>
                   {allProduct?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-                    const selectedUser = selected.indexOf(item?.username) !== -1;
+                    const selectedProduct = selected.indexOf(item?.handleFilterByName) !== -1;
 
                     return (
-                      <TableRow hover key={item._id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={item._id} tabIndex={-1} role="checkbox" selected={selectedProduct}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, item.username)} />
+                          <Checkbox checked={selectedProduct} onChange={(event) => handleClick(event, item.name)} />
                         </TableCell>
 
-                        <TableCell align="left">{item.username}</TableCell>
+                        <TableCell align="left">{item.name}</TableCell>
 
-                        <TableCell align="left">{item.email}</TableCell>
+                        <TableCell align="left">{item.description}</TableCell>
 
-                        <TableCell align="left">{item.role}</TableCell>
+                        <TableCell align="left">{item.price}</TableCell>
 
-                        <TableCell align="left">{item.phone}</TableCell>
+                        <TableCell align="left">{item.ingredient}</TableCell>
+
+                        <TableCell align="left">{item.type}</TableCell>
+
 
                         <TableCell align="right" style={{ flexDirection: 'row' }}>
                           <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'space-around' }}>
-                            <Button variant="outlined" onClick={() => handleOpenEditModal(item)}>
+                            <Button style={{marginRight:20}} variant="outlined" onClick={() => handleOpenEditModal(item)}>
                               Edit
                             </Button>
                             <Button variant="outlined">Delete</Button>
@@ -353,6 +363,8 @@ export default function ProductPage() {
           Delete
         </MenuItem>
       </Popover>
+
+      <ModalCreateProduct setOpenCreateProductModal={setOpenCreateProductModal} openCreateModal={openCreateProductModal}/>
       <Modal
         open={openEditModal}
         onClose={handleClose}
