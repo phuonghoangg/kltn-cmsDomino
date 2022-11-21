@@ -2,6 +2,8 @@ import { MenuItem, Modal, Select, TextField,Button } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createProduct } from 'src/redux/apiRequest';
 import Typography from 'src/theme/overrides/Typography';
 
 const style = {
@@ -15,14 +17,26 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const styleButton = {
 
-}
 const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
-  console.log(openCreateModal);
   const [type, setType] = useState('pizza');
+  const [name,setName] = useState('')
+  const [description,setDescription] = useState('')
+  const [ingredient,setIngredient] = useState('')
+  const [imgUrl,setImgUrl] = useState('')
+  const [price,setPrice] = useState('')
+  const [priceC,setPriceC] = useState(0)
 
-  const handleCreate = () => {};
+  const dispatch  = useDispatch()
+  const handleCreate = () => {
+    const newProduct = {
+      name,description,ingredient,imgUrl,price,type,
+      priceC: parseInt(priceC)
+    }
+    createProduct(dispatch,newProduct)
+    setOpenCreateProductModal(false)
+
+  };
   const handleChange = (e) =>{
     setType(e.target.value)
   }
@@ -45,6 +59,7 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="Product name"
             variant="outlined"
             placeholder="Enter product name"
+            onChange={(e)=>setName(e.target.value)}
           />
           <TextField
             style={{ paddingBottom: 20 }}
@@ -52,6 +67,8 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="Description"
             variant="outlined"
             placeholder="Enter "
+            onChange={(e)=>setDescription(e.target.value)}
+
           />
           <TextField
             style={{ paddingBottom: 20 }}
@@ -59,6 +76,8 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="Ingredient"
             variant="outlined"
             placeholder="Enter ingredient"
+            onChange={(e)=>setIngredient(e.target.value)}
+
           />
           <TextField
             style={{ paddingBottom: 20 }}
@@ -66,6 +85,8 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="Image link"
             variant="outlined"
             placeholder="Enter "
+            onChange={(e)=>setImgUrl(e.target.value)}
+
           />
           <TextField
             style={{ paddingBottom: 20 }}
@@ -73,6 +94,8 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="Price"
             variant="outlined"
             placeholder="Enter price"
+            onChange={(e)=>setPrice(e.target.value)}
+
           />
           <TextField
             style={{ paddingBottom: 20 }}
@@ -80,6 +103,8 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             label="priceCount"
             variant="outlined"
             placeholder="Enter priceC"
+            onChange={(e)=>setPriceC(e.target.value)}
+
           />
           <Select style={{marginBottom:20}} value={type} label="Type" onChange={handleChange}>
             <MenuItem value={'pizza'}>pizza</MenuItem>
@@ -89,7 +114,7 @@ const ModalCreateProduct = ({ setOpenCreateProductModal, openCreateModal }) => {
             <MenuItem value={'dessert'}>dessert</MenuItem>
           </Select>
 
-            <Button variant='outlined'>Create</Button>
+            <Button variant='outlined' onClick={handleCreate}>Create</Button>
         </div>
       </Box>
       

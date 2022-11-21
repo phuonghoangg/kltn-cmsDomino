@@ -19,21 +19,24 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTotalDashboard } from 'src/redux/apiRequest';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const user = useSelector((state)=>state.user.login?.currentUser)
-  
-  console.log(user);
+  const count = useSelector((state)=>state.bill.totalDashboard.total)
+  console.log(count);
   const theme = useTheme();
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   useEffect(()=>{
     if(!user){
       navigate('/login')
     }
-  })
+    getTotalDashboard(dispatch)
+  },[])
   return (
     <>
       <Helmet>
@@ -47,15 +50,15 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total Price" total={714000} icon={'tabler:brand-cashapp'} />
+            <AppWidgetSummary title="Total Price" total={count?.countBill} icon={'tabler:brand-cashapp'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total User" total={20} color="info" icon={'bx:user'} />
+            <AppWidgetSummary title="Total User" total={count?.countUser} color="info" icon={'bx:user'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total Product" total={50} color="warning" icon={'fluent:food-pizza-24-regular'} />
+            <AppWidgetSummary title="Total Product" total={count?.countProduct} color="warning" icon={'fluent:food-pizza-24-regular'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
@@ -67,17 +70,17 @@ export default function DashboardAppPage() {
               title="Order"
               subheader="total order by day"
               chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
+                '01/01/2022',
+                '02/01/2022',
+                '03/01/2022',
+                '04/01/2022',
+                '05/01/2022',
+                '06/01/2022',
+                '07/01/2022',
+                '08/01/2022',
+                '09/01/2022',
+                '10/01/2022',
+                '11/01/2022',
               ]}
               // line,arena,column
               chartData={[

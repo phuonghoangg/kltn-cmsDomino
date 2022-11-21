@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getAllProductFail, getAllProductStart, getAllProductSuccess } from "./productSlice";
+import { getTotalDashboardFail, getTotalDashboardStart, getTotalDashboardSuccess } from "./billSlice";
+import { createProductFail, createProductStart, createProductSuccess, getAllProductFail, getAllProductStart, getAllProductSuccess } from "./productSlice";
 import { getAllUserFail, getAllUserStart, getAllUserSuccess, loginFail, loginStart, loginSuccess, logOutFail, logOutStart, logOutSuccess, registerFail, registerStart, registerSuccess } from "./userSlice";
 
 
@@ -63,6 +64,42 @@ export const getAllProduct = async (dispatch) =>{
         dispatch(getAllProductSuccess(res.data));
     } catch (error) {
         dispatch(getAllProductFail())
+    }
+}
+export const createProduct = async (dispatch,product)=>{
+    dispatch(createProductStart())
+    try {
+        await axios.post(`${host}/v2/product`,product)
+        dispatch(createProductSuccess())
+    } catch (error) {
+        dispatch(createProductFail())
+    }
+}
+export const updateProduct = async (id,dispatch,product)=>{
+    dispatch(createProductStart())
+    try {
+        await axios.post(`${host}/v2/product/${id}`,product)
+        dispatch(createProductSuccess())
+    } catch (error) {
+        dispatch(createProductFail())
+    }
+}
+
+export const getTotalDashboard = async (dispatch)=>{
+    dispatch(getTotalDashboardStart())
+    try {
+        const countUser = await axios.get(`${host}/v1/user/count-user`)
+        const countProduct = await axios.get(`${host}/v2/product/count-product`)
+        const countBill = await axios.get(`${host}/v3/bill/total-price`)
+        let data = {
+            countUser: countUser.data,
+            countProduct:countProduct.data,
+            countBill:countBill.data
+        }
+        dispatch(getTotalDashboardSuccess(data))
+    } catch (error) {
+    dispatch(getTotalDashboardFail())
+        
     }
 }
 

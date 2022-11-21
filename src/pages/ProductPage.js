@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
+import { filter, parseInt } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 // @mui
@@ -36,7 +36,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProduct, getAllUser, updateUser } from 'src/redux/apiRequest';
+import { getAllProduct, getAllUser, updateProduct, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
 import ModalCreateProduct from 'src/components/modal/ModalCreateProduct';
 import { useNavigate } from 'react-router-dom';
@@ -100,12 +100,16 @@ export default function ProductPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openCreateProductModal, setOpenCreateProductModal] = useState(false);
 
-  const [userEdit, setUserEdit] = useState();
+  const [productEdit, setProductEdit] = useState();
 
-  const [role,setRole] = useState()
-  const [username,setUsername] = useState()
-  const [phone,setPhone] = useState()
-  const [idEdit, setIdEdit] = useState();
+  const [idProduct,setIdProduct] = useState('')
+  const [name,setName] = useState('')
+  const [description,setDescription] = useState('')
+  const [ingredient,setIngredient] = useState('')
+  const [imgUrl,setImgUrl] = useState('')
+  const [price,setPrice] = useState('')
+  const [priceC,setPriceC] = useState(0)
+
 
   const [open, setOpen] = useState(null);
 
@@ -120,15 +124,9 @@ export default function ProductPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [type, setType] = useState('pizza');
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-    console.log(event.currentTarget);
-  };
 
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -183,7 +181,6 @@ export default function ProductPage() {
   const user = useSelector((state) => state.user.login.currentUser);
   const allUser = useSelector((state) => state.user.users?.allUser);
   const allProduct = useSelector((state)=>state.product.products.allProduct);
-  console.log(allProduct);
   const dispatch = useDispatch();
   const navigate = useNavigate()
  
@@ -191,16 +188,19 @@ export default function ProductPage() {
     if(!user){
       navigate('/login')
     }
-    getAllUser(user.accessToken, dispatch);
     getAllProduct(dispatch)
-  }, [openEditModal]);
+  }, [openEditModal,openCreateProductModal]);
 
   const handleOpenEditModal = (item) => {
+    setIdProduct(item._id)
     setOpenEditModal(true);
-    setUserEdit(item);
-    setRole(item.role)
-    setPhone(item.phone)
-    setIdEdit(item._id)
+    setName(item.name)
+    setType(item.type)
+    setDescription(item.description)
+    setIngredient(item.ingredient)
+    setImgUrl(item.imgUrl)
+    setPrice(item.price)
+    setPriceC(parseInt(item.priceC))
   };
 
   const handleOpenProductCreate = () =>{
@@ -209,20 +209,21 @@ export default function ProductPage() {
   const handleClose = () => {
     setOpenEditModal(false);
   };
-  const handleChangeRole = (e) =>{
-    setRole(e.target.value);
-  }
-
+  
   const handleUpdate = () =>{
     const newUpdate = {
-      username,
-      role,
-      phone
+      name,description,ingredient,imgUrl,price,type,
+      priceC: parseInt(priceC)
     }
-    updateUser(idEdit,user.accessToken,newUpdate,dispatch)
+    
+    updateProduct(idProduct,dispatch,newUpdate)
     setOpenEditModal(false)
+
+
   }
- 
+  const handleChange = (e) =>{
+    setType(e.target.value)
+  }
   return (
     <>
       <Helmet>
@@ -232,7 +233,7 @@ export default function ProductPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Product
           </Typography>
           <Button onClick={handleOpenProductCreate} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             New Product
@@ -280,7 +281,7 @@ export default function ProductPage() {
                             <Button style={{marginRight:20}} variant="outlined" onClick={() => handleOpenEditModal(item)}>
                               Edit
                             </Button>
-                            <Button variant="outlined">Delete</Button>
+                            {/* <Button variant="outlined">Delete</Button> */}
                           </div>
                           {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
@@ -335,39 +336,6 @@ export default function ProductPage() {
         </Card>
       </Container>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem
-          onClick={(e) => {
-            console.log('click editt', e);
-          }}
-        >
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
-
       <ModalCreateProduct setOpenCreateProductModal={setOpenCreateProductModal} openCreateModal={openCreateProductModal}/>
       <Modal
         open={openEditModal}
@@ -375,51 +343,82 @@ export default function ProductPage() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" style={{ paddingBottom: 20 }}>
-            Thông tin chi tiết
-          </Typography>
+         <Box sx={style}>
+        <div>
+          <h1>Create Product</h1>
+        </div>
 
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <TextField
-            id="modal-modal-description"
-            disabled
-            label="Phone"
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="Product name"
             variant="outlined"
-            defaultValue={userEdit?.email}
-            style={{paddingBottom:20}}
+            placeholder="Enter product name"
+            defaultValue={name}
+            onChange={e=>setName(e.target.value)}
+            />
+          <TextField
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="Description"
+            variant="outlined"
+            placeholder="Enter "
+            defaultValue={description}
+            onChange={e=>setDescription(e.target.value)}
+
           />
           <TextField
-            id="modal-modal-description"
-            label="username"
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="Ingredient"
             variant="outlined"
-            defaultValue={userEdit?.username}
-            style={{paddingBottom:20}}
-            onChange={(e)=>setUsername(e.target.value)}
-            
+            placeholder="Enter ingredient"
+            defaultValue={ingredient}
+            onChange={e=>setIngredient(e.target.value)}
+
           />
-          
-         <div style={{paddingBottom:20}}>
-            <Select
-              value={role}
-              label="Role"
-              onChange={handleChangeRole}
-              
-            >
-              <MenuItem value={'customer'}>customer</MenuItem>
-              <MenuItem value={'chef'}>chef</MenuItem>
-              <MenuItem value={'cashier'}>cashier</MenuItem>
-            </Select>
-         </div>
           <TextField
-            id="modal-modal-description"
-            label="Phone"
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="Image link"
             variant="outlined"
-            defaultValue={userEdit?.phone}
-            style={{paddingBottom:20}}
-            onChange={(e)=>setPhone(e.target.value)}
+            placeholder="Enter "
+            defaultValue={imgUrl}
+            onChange={e=>setImgUrl(e.target.value)}
+
           />
-          <Button variant='contained' onClick={handleUpdate}>Save</Button>
-        </Box>
+          <TextField
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="Price"
+            variant="outlined"
+            placeholder="Enter price"
+            defaultValue={price}
+            onChange={e=>setPrice(e.target.value)}
+
+          />
+          <TextField
+            style={{ paddingBottom: 20 }}
+            id="outlined-basic"
+            label="priceCount"
+            variant="outlined"
+            placeholder="Enter priceC"
+            defaultValue={priceC}
+            onChange={e=>setPriceC(parseInt(e.target.value))}
+
+          />
+          <Select style={{marginBottom:20}} value={type} label="Type" onChange={handleChange}>
+            <MenuItem value={'pizza'}>pizza</MenuItem>
+            <MenuItem value={'pasta'}>pasta</MenuItem>
+            <MenuItem value={'sides'}>sides</MenuItem>
+            <MenuItem value={'drinks'}>drinks</MenuItem>
+            <MenuItem value={'dessert'}>dessert</MenuItem>
+          </Select>
+
+            <Button variant='outlined' onClick={handleUpdate}>Update</Button>
+        </div>
+      </Box>
       </Modal>
     </>
   );
