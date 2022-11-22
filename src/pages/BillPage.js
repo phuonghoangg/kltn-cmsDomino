@@ -272,7 +272,7 @@ export default function BillPage() {
                                   }
                         </TableCell>
 
-                        <TableCell align="left">{item.userActive?.username}</TableCell>
+                        <TableCell align="left">{item.user?.username}</TableCell>
                         <TableCell align="left">{item.chefActive?.username}</TableCell>
 
 

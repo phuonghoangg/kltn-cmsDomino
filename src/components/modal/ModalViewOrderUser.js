@@ -45,8 +45,8 @@ const ModalViewOrderUser = ({ token, dataUser, openViewOrderModal, handleClose }
                     <h1 style={{color:'#1f6991'}}>Hóa đơn của {dataUser?.username}</h1>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <p style={{fontWeight:600,color:'#ee7638'}}>Total Bill: {billUser.total} </p>
-                    <p style={{fontWeight:600,color:'#ee7638'}}>All Price: {billUser.price}</p>
+                    <p style={{fontWeight:600,color:'#ee7638'}}>Total Bill: {billUser?.total} </p>
+                    <p style={{fontWeight:600,color:'#ee7638'}}>All Price: {billUser?.price}</p>
                 </div>
                 <div style={{ flexDirection: 'row', display: 'flex', paddingBottom: 7,borderBottom:'1px solid #bec1c7' }}>
                     <div style={{ width: 150, color:'#A0AEC0', fontWeight:600 }}>Table</div>
