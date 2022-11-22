@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
-import { filter, parseInt } from 'lodash';
+import { filter } from 'lodash';
+import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 // @mui
 import {
@@ -35,19 +36,18 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProduct, getAllUser, updateProduct, updateUser } from 'src/redux/apiRequest';
+import { getAllBill, getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
-import ModalCreateProduct from 'src/components/modal/ModalCreateProduct';
 import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'numberTable', label: 'Table', alignRight: false },
   { id: 'price', label: 'Price', alignRight: false },
-  { id: 'ingredient', label: 'Ingredient', alignRight: false },
-  { id: 'type', label: 'Type', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'order', label: 'Order User', alignRight: false },
+  { id: 'order', label: 'Chef', alignRight: false },
   { id: '' },
 ];
 
@@ -95,22 +95,15 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function ProductPage() {
+export default function BillPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [openCreateProductModal, setOpenCreateProductModal] = useState(false);
 
-  const [productEdit, setProductEdit] = useState();
+  const [userEdit, setUserEdit] = useState();
 
-  const [idProduct, setIdProduct] = useState('')
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [ingredient, setIngredient] = useState('')
-  const [imgUrl, setImgUrl] = useState('')
-  const [price, setPrice] = useState('')
-  const [priceC, setPriceC] = useState(0)
-
-
-  // console.log(valueDate);
+  const [role, setRole] = useState()
+  const [username, setUsername] = useState()
+  const [phone, setPhone] = useState()
+  const [idEdit, setIdEdit] = useState();
 
   const [open, setOpen] = useState(null);
 
@@ -125,9 +118,15 @@ export default function ProductPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [type, setType] = useState('pizza');
 
+  const handleOpenMenu = (event) => {
+    setOpen(event.currentTarget);
+    console.log(event.currentTarget);
+  };
 
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -181,52 +180,40 @@ export default function ProductPage() {
 
   const user = useSelector((state) => state.user.login.currentUser);
   const allUser = useSelector((state) => state.user.users?.allUser);
-  const allProduct = useSelector((state) => state.product.products.allProduct);
+  const allBill = useSelector((state) => state.bill.bills.allBills)
   const dispatch = useDispatch();
   const navigate = useNavigate()
-
+  console.log("all bill", allBill);
   useEffect(() => {
     if (!user) {
       navigate('/login')
     }
-    getAllProduct(dispatch)
-  }, [openEditModal, openCreateProductModal]);
+    getAllUser(user.accessToken, dispatch);
+    getAllBill(user.accessToken, dispatch);
+  }, [openEditModal]);
 
   const handleOpenEditModal = (item) => {
-    setIdProduct(item._id)
     setOpenEditModal(true);
-    setName(item.name)
-    setType(item.type)
-    setDescription(item.description)
-    setIngredient(item.ingredient)
-    setImgUrl(item.imgUrl)
-    setPrice(item.price)
-    setPriceC(parseInt(item.priceC))
+    setUserEdit(item);
+    setRole(item.role)
+    setPhone(item.phone)
+    setIdEdit(item._id)
   };
-
-  const handleOpenProductCreate = () => {
-    setOpenCreateProductModal(true)
-  }
   const handleClose = () => {
     setOpenEditModal(false);
   };
+  const handleChangeRole = (e) => {
+    setRole(e.target.value);
+  }
 
   const handleUpdate = () => {
     const newUpdate = {
-      name, description, ingredient, imgUrl, price, type,
-      priceC: parseInt(priceC)
+      username,
+      role,
+      phone
     }
-
-    updateProduct(idProduct, dispatch, newUpdate)
+    updateUser(idEdit, user.accessToken, newUpdate, dispatch)
     setOpenEditModal(false)
-
-
-  }
-  const handleChange = (e) => {
-    setType(e.target.value)
-  }
-  const handleChangeDate = () => {
-
   }
   return (
     <>
@@ -235,25 +222,10 @@ export default function ProductPage() {
       </Helmet>
 
       <Container>
-        {/* <div>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Basic example"
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </div> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Product
+            All Bill
           </Typography>
-          <Button onClick={handleOpenProductCreate} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Product
-          </Button>
         </Stack>
 
         <Card>
@@ -266,38 +238,50 @@ export default function ProductPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={allProduct?.length}
+                  rowCount={allBill?.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {allProduct?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-                    const selectedProduct = selected.indexOf(item?.handleFilterByName) !== -1;
+                  {allBill?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
+                    const selectedUser = selected.indexOf(item?.username) !== -1;
 
                     return (
-                      <TableRow hover key={item._id} tabIndex={-1} role="checkbox" selected={selectedProduct}>
+                      <TableRow hover key={item._id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedProduct} onChange={(event) => handleClick(event, item.name)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, item.username)} />
                         </TableCell>
 
-                        <TableCell align="left">{item.name}</TableCell>
+                        <TableCell align="left">{item.numberTable}</TableCell>
 
-                        <TableCell align="left">{item.description}</TableCell>
+                        <TableCell align="left">{item.priceBill}</TableCell>
 
-                        <TableCell align="left">{item.price}</TableCell>
+                        <TableCell align="left">{
+                          item.status === "DON_MOI"
+                            ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#82e8a7' }}>New</div>
+                            : item.status === "DON_DA_XAC_NHAN"
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#facc17' }}>Wait chef</div>
+                              : item.status === "BEP_XAC_NHAN" 
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#fb9948' }}>Wait place</div>
+                              : item.status === "NHAN_VIEN_NHAN_MON" 
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#1f6991' }}>Done!</div>
+                              : item.status === "HUY_DON" 
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: 'red' }}>Drop bill</div>
+                              : <div>not status</div>
+                                  }
+                        </TableCell>
 
-                        <TableCell align="left">{item.ingredient}</TableCell>
-
-                        <TableCell align="left">{item.type}</TableCell>
+                        <TableCell align="left">{item.userActive?.username}</TableCell>
+                        <TableCell align="left">{item.chefActive?.username}</TableCell>
 
 
                         <TableCell align="right" style={{ flexDirection: 'row' }}>
                           <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'space-around' }}>
-                            <Button style={{ marginRight: 20 }} variant="outlined" onClick={() => handleOpenEditModal(item)}>
+                            <Button variant="outlined" onClick={() => handleOpenEditModal(item)}>
                               Edit
                             </Button>
-                            {/* <Button variant="outlined">Delete</Button> */}
+
                           </div>
                           {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
@@ -343,7 +327,7 @@ export default function ProductPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={allProduct?.length}
+            count={allBill?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -352,7 +336,38 @@ export default function ProductPage() {
         </Card>
       </Container>
 
-      <ModalCreateProduct setOpenCreateProductModal={setOpenCreateProductModal} openCreateModal={openCreateProductModal} />
+      <Popover
+        open={Boolean(open)}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{
+          sx: {
+            p: 1,
+            width: 140,
+            '& .MuiMenuItem-root': {
+              px: 1,
+              typography: 'body2',
+              borderRadius: 0.75,
+            },
+          },
+        }}
+      >
+        <MenuItem
+          onClick={(e) => {
+            console.log('click editt', e);
+          }}
+        >
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+          Edit
+        </MenuItem>
+
+        <MenuItem sx={{ color: 'error.main' }}>
+          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+          Delete
+        </MenuItem>
+      </Popover>
       <Modal
         open={openEditModal}
         onClose={handleClose}
@@ -360,80 +375,49 @@ export default function ProductPage() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div>
-            <h1>Update Product</h1>
-          </div>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{ paddingBottom: 20 }}>
+            Thông tin chi tiết
+          </Typography>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="Product name"
-              variant="outlined"
-              placeholder="Enter product name"
-              defaultValue={name}
-              onChange={e => setName(e.target.value)}
-            />
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="Description"
-              variant="outlined"
-              placeholder="Enter "
-              defaultValue={description}
-              onChange={e => setDescription(e.target.value)}
+          <TextField
+            id="modal-modal-description"
+            disabled
+            label="Phone"
+            variant="outlined"
+            defaultValue={userEdit?.email}
+            style={{ paddingBottom: 20 }}
+          />
+          <TextField
+            id="modal-modal-description"
+            label="username"
+            variant="outlined"
+            defaultValue={userEdit?.username}
+            style={{ paddingBottom: 20 }}
+            onChange={(e) => setUsername(e.target.value)}
 
-            />
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="Ingredient"
-              variant="outlined"
-              placeholder="Enter ingredient"
-              defaultValue={ingredient}
-              onChange={e => setIngredient(e.target.value)}
+          />
 
-            />
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="Image link"
-              variant="outlined"
-              placeholder="Enter "
-              defaultValue={imgUrl}
-              onChange={e => setImgUrl(e.target.value)}
+          <div style={{ paddingBottom: 20 }}>
+            <Select
+              value={role}
+              label="Role"
+              onChange={handleChangeRole}
 
-            />
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="Price"
-              variant="outlined"
-              placeholder="Enter price"
-              defaultValue={price}
-              onChange={e => setPrice(e.target.value)}
-
-            />
-            <TextField
-              style={{ paddingBottom: 20 }}
-              id="outlined-basic"
-              label="priceCount"
-              variant="outlined"
-              placeholder="Enter priceC"
-              defaultValue={priceC}
-              onChange={e => setPriceC(parseInt(e.target.value))}
-
-            />
-            <Select style={{ marginBottom: 20 }} value={type} label="Type" onChange={handleChange}>
-              <MenuItem value={'pizza'}>pizza</MenuItem>
-              <MenuItem value={'pasta'}>pasta</MenuItem>
-              <MenuItem value={'sides'}>sides</MenuItem>
-              <MenuItem value={'drinks'}>drinks</MenuItem>
-              <MenuItem value={'dessert'}>dessert</MenuItem>
+            >
+              <MenuItem value={'customer'}>customer</MenuItem>
+              <MenuItem value={'chef'}>chef</MenuItem>
+              <MenuItem value={'cashier'}>cashier</MenuItem>
             </Select>
-
-            <Button variant='outlined' onClick={handleUpdate}>Update</Button>
           </div>
+          <TextField
+            id="modal-modal-description"
+            label="Phone"
+            variant="outlined"
+            defaultValue={userEdit?.phone}
+            style={{ paddingBottom: 20 }}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <Button variant='contained' onClick={handleUpdate}>Save</Button>
         </Box>
       </Modal>
     </>

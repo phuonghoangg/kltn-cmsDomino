@@ -39,6 +39,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllUser, updateUser } from 'src/redux/apiRequest';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import ModalViewOrderUser from 'src/components/modal/ModalViewOrderUser';
 
 // ----------------------------------------------------------------------
 
@@ -53,8 +54,8 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 const style = {
-  display:'flex',
-  flexDirection:'column',
+  display: 'flex',
+  flexDirection: 'column',
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -97,12 +98,15 @@ function applySortFilter(array, comparator, query) {
 
 export default function UserPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openViewOrderModal, setOpenViewOrderModal] = useState(false);
 
   const [userEdit, setUserEdit] = useState();
+  const [userViewOrder, setUserViewOrder] = useState();
 
-  const [role,setRole] = useState()
-  const [username,setUsername] = useState()
-  const [phone,setPhone] = useState()
+
+  const [role, setRole] = useState()
+  const [username, setUsername] = useState()
+  const [phone, setPhone] = useState()
   const [idEdit, setIdEdit] = useState();
 
   const [open, setOpen] = useState(null);
@@ -182,9 +186,9 @@ export default function UserPage() {
   const allUser = useSelector((state) => state.user.users?.allUser);
   const dispatch = useDispatch();
   const navigate = useNavigate()
- 
+
   useEffect(() => {
-    if(!user){
+    if (!user) {
       navigate('/login')
     }
     getAllUser(user.accessToken, dispatch);
@@ -199,19 +203,25 @@ export default function UserPage() {
   };
   const handleClose = () => {
     setOpenEditModal(false);
+    setUserViewOrder()
+    setOpenViewOrderModal(false)
   };
-  const handleChangeRole = (e) =>{
+  const handleChangeRole = (e) => {
     setRole(e.target.value);
   }
 
-  const handleUpdate = () =>{
+  const handleUpdate = () => {
     const newUpdate = {
       username,
       role,
       phone
     }
-    updateUser(idEdit,user.accessToken,newUpdate,dispatch)
+    updateUser(idEdit, user.accessToken, newUpdate, dispatch)
     setOpenEditModal(false)
+  }
+  const handleOpenOrder = (item) => {
+    setOpenViewOrderModal(true)
+    setUserViewOrder(item);
   }
   return (
     <>
@@ -263,15 +273,13 @@ export default function UserPage() {
                         <TableCell align="left">{item.phone}</TableCell>
 
                         <TableCell align="right" style={{ flexDirection: 'row' }}>
-                          <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'space-around' }}>
+                          <div style={{ flexDirection: 'row', display: 'flex' }}>
                             <Button variant="outlined" onClick={() => handleOpenEditModal(item)}>
                               Edit
                             </Button>
-                            <Button variant="outlined">Delete</Button>
+                            {item.role === 'chef' ? <></> : <Button onClick={() => handleOpenOrder(item)} style={{ marginLeft: 20 }} variant="outlined">View Order</Button>}
                           </div>
-                          {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton> */}
+
                         </TableCell>
                       </TableRow>
                     );
@@ -354,6 +362,13 @@ export default function UserPage() {
           Delete
         </MenuItem>
       </Popover>
+
+
+      {/* Modal */}
+
+      <ModalViewOrderUser token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
+
+
       <Modal
         open={openEditModal}
         onClose={handleClose}
@@ -371,37 +386,37 @@ export default function UserPage() {
             label="Phone"
             variant="outlined"
             defaultValue={userEdit?.email}
-            style={{paddingBottom:20}}
+            style={{ paddingBottom: 20 }}
           />
           <TextField
             id="modal-modal-description"
             label="username"
             variant="outlined"
             defaultValue={userEdit?.username}
-            style={{paddingBottom:20}}
-            onChange={(e)=>setUsername(e.target.value)}
-            
+            style={{ paddingBottom: 20 }}
+            onChange={(e) => setUsername(e.target.value)}
+
           />
-          
-         <div style={{paddingBottom:20}}>
+
+          <div style={{ paddingBottom: 20 }}>
             <Select
               value={role}
               label="Role"
               onChange={handleChangeRole}
-              
+
             >
               <MenuItem value={'customer'}>customer</MenuItem>
               <MenuItem value={'chef'}>chef</MenuItem>
               <MenuItem value={'cashier'}>cashier</MenuItem>
             </Select>
-         </div>
+          </div>
           <TextField
             id="modal-modal-description"
             label="Phone"
             variant="outlined"
             defaultValue={userEdit?.phone}
-            style={{paddingBottom:20}}
-            onChange={(e)=>setPhone(e.target.value)}
+            style={{ paddingBottom: 20 }}
+            onChange={(e) => setPhone(e.target.value)}
           />
           <Button variant='contained' onClick={handleUpdate}>Save</Button>
         </Box>

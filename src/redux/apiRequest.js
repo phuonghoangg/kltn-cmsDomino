@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTotalDashboardFail, getTotalDashboardStart, getTotalDashboardSuccess } from "./billSlice";
+import { getAllBillFail, getAllBillStart, getAllBillSuccess, getBillUserFail, getBillUserStart, getBillUserSuccess, getTotalDashboardFail, getTotalDashboardStart, getTotalDashboardSuccess } from "./billSlice";
 import { createProductFail, createProductStart, createProductSuccess, getAllProductFail, getAllProductStart, getAllProductSuccess } from "./productSlice";
 import { getAllUserFail, getAllUserStart, getAllUserSuccess, loginFail, loginStart, loginSuccess, logOutFail, logOutStart, logOutSuccess, registerFail, registerStart, registerSuccess } from "./userSlice";
 
@@ -102,4 +102,28 @@ export const getTotalDashboard = async (dispatch)=>{
         
     }
 }
+// http://localhost:9000/v3/bill/
+export const getAllBill = async (token,dispatch) =>{
+    dispatch(getAllBillStart())
+    try {
+        const res = await axios.get(`${host}/v3/bill`,{
+            headers: {token: `Bearer ${token}`}
+        })
+        dispatch(getAllBillSuccess(res.data))
+    } catch (error) {
+        dispatch(getAllBillFail())
+    }
+}
 
+export const getAllBillUser = async (token,dispatch,id) =>{
+    dispatch(getBillUserStart())
+    try {
+        const res = await axios.get(`${host}/v3/bill/a/${id}`,{
+            headers: {token: `Bearer ${token}`}
+        })
+        console.log(res.data);
+        dispatch(getBillUserSuccess(res.data))
+    } catch (error) {
+        dispatch(getBillUserFail())
+    }
+}
