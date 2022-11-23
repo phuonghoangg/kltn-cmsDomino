@@ -103,10 +103,10 @@ export const getTotalDashboard = async (dispatch)=>{
     }
 }
 // http://localhost:9000/v3/bill/
-export const getAllBill = async (token,dispatch) =>{
+export const getAllBill = async (token,dispatch,payload) =>{
     dispatch(getAllBillStart())
     try {
-        const res = await axios.get(`${host}/v3/bill`,{
+        const res = await axios.post(`${host}/v3/bill/find`,payload,{
             headers: {token: `Bearer ${token}`}
         })
         dispatch(getAllBillSuccess(res.data))
@@ -115,10 +115,11 @@ export const getAllBill = async (token,dispatch) =>{
     }
 }
 
-export const getAllBillUser = async (token,dispatch,id) =>{
+export const getAllBillUser = async (token,dispatch,id,payload) =>{
     dispatch(getBillUserStart())
     try {
-        const res = await axios.get(`${host}/v3/bill/a/${id}`,{
+        console.log(payload);
+        const res = await axios.post(`${host}/v3/bill/a/${id}`,payload,{
             headers: {token: `Bearer ${token}`}
         })
         console.log(res.data);

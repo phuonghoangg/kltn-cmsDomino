@@ -99,6 +99,7 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openViewOrderModal, setOpenViewOrderModal] = useState(false);
+  const [valueDate, setValueDate] = useState("")
 
   const [userEdit, setUserEdit] = useState();
   const [userViewOrder, setUserViewOrder] = useState();
@@ -205,6 +206,7 @@ export default function UserPage() {
     setOpenEditModal(false);
     setUserViewOrder()
     setOpenViewOrderModal(false)
+    setValueDate('')
   };
   const handleChangeRole = (e) => {
     setRole(e.target.value);
@@ -366,7 +368,7 @@ export default function UserPage() {
 
       {/* Modal */}
 
-      <ModalViewOrderUser token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
+      <ModalViewOrderUser setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
 
 
       <Modal

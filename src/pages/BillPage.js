@@ -104,6 +104,7 @@ export default function BillPage() {
   const [username, setUsername] = useState()
   const [phone, setPhone] = useState()
   const [idEdit, setIdEdit] = useState();
+  const [valueDate,setValueDate] = useState()
 
   const [open, setOpen] = useState(null);
 
@@ -183,14 +184,16 @@ export default function BillPage() {
   const allBill = useSelector((state) => state.bill.bills.allBills)
   const dispatch = useDispatch();
   const navigate = useNavigate()
-  console.log("all bill", allBill);
+  console.log("all bill", allBill?.bills);
   useEffect(() => {
+    const payload = {
+      date:valueDate
+    }
     if (!user) {
       navigate('/login')
     }
-    getAllUser(user.accessToken, dispatch);
-    getAllBill(user.accessToken, dispatch);
-  }, [openEditModal]);
+    getAllBill(user.accessToken, dispatch,payload);
+  }, [openEditModal,valueDate]);
 
   const handleOpenEditModal = (item) => {
     setOpenEditModal(true);
@@ -215,6 +218,11 @@ export default function BillPage() {
     updateUser(idEdit, user.accessToken, newUpdate, dispatch)
     setOpenEditModal(false)
   }
+
+    const handleChangeDate = (e) => {
+        setValueDate(e.target.value);
+    }
+    
   return (
     <>
       <Helmet>
@@ -225,6 +233,13 @@ export default function BillPage() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             All Bill
+          </Typography>
+          <TextField onChange={handleChangeDate} defaultValue={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
+          <Typography variant="h5" gutterBottom>
+            Total: {allBill?.total}
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            Price: {allBill?.price}
           </Typography>
         </Stack>
 
@@ -244,13 +259,13 @@ export default function BillPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {allBill?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => {
-                    const selectedUser = selected.indexOf(item?.username) !== -1;
+                  {allBill?.bills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item,index) => {
+                    const selectedUser = selected.indexOf(item?._id) !== -1;
 
                     return (
-                      <TableRow hover key={item._id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, item.username)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, item._id)} />
                         </TableCell>
 
                         <TableCell align="left">{item.numberTable}</TableCell>
@@ -327,7 +342,7 @@ export default function BillPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={allBill?.length}
+            count={allBill?.bills.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
