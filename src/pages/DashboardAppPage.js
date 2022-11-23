@@ -100,7 +100,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={6} lg={12}>
             <AppWebsiteVisits
               title="Order"
-              subheader="total order by day"
+              subheader="total order by month"
               chartLabels={[
                 '01/01/2022',
                 '02/01/2022',
@@ -121,7 +121,7 @@ export default function DashboardAppPage() {
                   name: '',
                   type: 'column', 
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                  data: count?.arrChart,
                 },
                
               ]}
