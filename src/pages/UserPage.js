@@ -100,6 +100,7 @@ export default function UserPage() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openViewOrderModal, setOpenViewOrderModal] = useState(false);
   const [valueDate, setValueDate] = useState("")
+  const [typeDate,setTypeDate] = useState("month")
 
   const [userEdit, setUserEdit] = useState();
   const [userViewOrder, setUserViewOrder] = useState();
@@ -368,7 +369,7 @@ export default function UserPage() {
 
       {/* Modal */}
 
-      <ModalViewOrderUser setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
+      <ModalViewOrderUser setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
 
 
       <Modal

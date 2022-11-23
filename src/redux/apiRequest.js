@@ -85,12 +85,12 @@ export const updateProduct = async (id,dispatch,product)=>{
     }
 }
 
-export const getTotalDashboard = async (dispatch)=>{
+export const getTotalDashboard = async (dispatch,payload)=>{
     dispatch(getTotalDashboardStart())
     try {
         const countUser = await axios.get(`${host}/v1/user/count-user`)
         const countProduct = await axios.get(`${host}/v2/product/count-product`)
-        const countBill = await axios.get(`${host}/v3/bill/total-price`)
+        const countBill = await axios.post(`${host}/v3/bill/total-price`,payload)
         let data = {
             countUser: countUser.data,
             countProduct:countProduct.data,
@@ -102,7 +102,7 @@ export const getTotalDashboard = async (dispatch)=>{
         
     }
 }
-// http://localhost:9000/v3/bill/
+
 export const getAllBill = async (token,dispatch,payload) =>{
     dispatch(getAllBillStart())
     try {

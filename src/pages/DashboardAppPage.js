@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, TextField, Select, MenuItem } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -25,6 +25,9 @@ import { getTotalDashboard } from 'src/redux/apiRequest';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
+  const [valueDate, setValueDate] = useState("")
+  const [typeDate,setTypeDate] = useState("month")
+
   const user = useSelector((state)=>state.user.login?.currentUser)
   const count = useSelector((state)=>state.bill.totalDashboard.total)
   console.log(count);
@@ -35,8 +38,23 @@ export default function DashboardAppPage() {
     if(!user){
       navigate('/login')
     }
-    getTotalDashboard(dispatch)
-  },[])
+
+    const payload = {
+      date: valueDate,
+      type: typeDate
+    }
+    console.log(payload);
+    getTotalDashboard(dispatch,payload)
+  },[valueDate,typeDate])
+
+  const handleChangeDate = (e) => {
+    setValueDate(e.target.value);
+  };
+
+  const handleChange = (e) =>{
+    setTypeDate(e.target.value)
+  }
+
   return (
     <>
       <Helmet>
@@ -47,6 +65,20 @@ export default function DashboardAppPage() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Admin welcome back
         </Typography>
+        <TextField
+                onChange={handleChangeDate}
+                defaultValue={valueDate}
+                id="date"
+                label="time"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                sx={{ width: 220,marginRight:5 }}
+              />
+                <Select style={{ marginBottom: 20 }} value={typeDate} onChange={handleChange}>
+                <MenuItem value={'year'}>year</MenuItem>
+                <MenuItem value={'month'}>month</MenuItem>
+                
+              </Select>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
@@ -81,6 +113,7 @@ export default function DashboardAppPage() {
                 '09/01/2022',
                 '10/01/2022',
                 '11/01/2022',
+                '12/01/2022',
               ]}
               // line,arena,column
               chartData={[

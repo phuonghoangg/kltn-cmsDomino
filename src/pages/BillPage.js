@@ -47,7 +47,7 @@ const TABLE_HEAD = [
   { id: 'price', label: 'Price', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'order', label: 'Order User', alignRight: false },
-  { id: 'order', label: 'Chef', alignRight: false },
+  { id: 'chef', label: 'Chef', alignRight: false },
   { id: '' },
 ];
 
@@ -105,7 +105,8 @@ export default function BillPage() {
   const [phone, setPhone] = useState()
   const [idEdit, setIdEdit] = useState();
   const [valueDate,setValueDate] = useState()
-
+  const [typeDate,setTypeDate] = useState("month")
+  
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -176,7 +177,7 @@ export default function BillPage() {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
-
+  
   const isNotFound = !filteredUsers.length && !!filterName;
 
   const user = useSelector((state) => state.user.login.currentUser);
@@ -187,13 +188,14 @@ export default function BillPage() {
   console.log("all bill", allBill?.bills);
   useEffect(() => {
     const payload = {
-      date:valueDate
+      date:valueDate,
+      type: typeDate
     }
     if (!user) {
       navigate('/login')
     }
     getAllBill(user.accessToken, dispatch,payload);
-  }, [openEditModal,valueDate]);
+  }, [openEditModal,valueDate,typeDate]);
 
   const handleOpenEditModal = (item) => {
     setOpenEditModal(true);
@@ -222,6 +224,9 @@ export default function BillPage() {
     const handleChangeDate = (e) => {
         setValueDate(e.target.value);
     }
+    const handleChangeType = (e) =>{
+      setTypeDate(e.target.value)
+    }
     
   return (
     <>
@@ -234,7 +239,14 @@ export default function BillPage() {
           <Typography variant="h4" gutterBottom>
             All Bill
           </Typography>
-          <TextField onChange={handleChangeDate} defaultValue={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
+          <div style={{display:'flex', flexDirection:'row'}}>
+            <TextField onChange={handleChangeDate} defaultValue={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
+            <Select style={{ marginBottom: 20 }} value={typeDate} onChange={handleChangeType}>
+                  <MenuItem value={'year'}>year</MenuItem>
+                  <MenuItem value={'month'}>month</MenuItem>
+                  <MenuItem value={'day'}>day</MenuItem>
+                </Select>
+          </div>
           <Typography variant="h5" gutterBottom>
             Total: {allBill?.total}
           </Typography>
@@ -254,7 +266,6 @@ export default function BillPage() {
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
                   rowCount={allBill?.length}
-                  numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
@@ -298,13 +309,12 @@ export default function BillPage() {
                             </Button>
 
                           </div>
-                          {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton> */}
+                       
                         </TableCell>
                       </TableRow>
                     );
                   })}
+                  
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
