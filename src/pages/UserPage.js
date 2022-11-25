@@ -101,6 +101,9 @@ export default function UserPage() {
   const [openViewOrderModal, setOpenViewOrderModal] = useState(false);
   const [valueDate, setValueDate] = useState("")
   const [typeDate,setTypeDate] = useState("month")
+  
+  const [month,setMonth] = useState('Month')
+  const [year,setYear] = useState('Year')
 
   const [userEdit, setUserEdit] = useState();
   const [userViewOrder, setUserViewOrder] = useState();
@@ -208,6 +211,8 @@ export default function UserPage() {
     setUserViewOrder()
     setOpenViewOrderModal(false)
     setValueDate('')
+    setMonth('Month')
+    setYear('Year')
   };
   const handleChangeRole = (e) => {
     setRole(e.target.value);
@@ -369,8 +374,9 @@ export default function UserPage() {
 
       {/* Modal */}
 
-      <ModalViewOrderUser setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
+      <ModalViewOrderUser month={month} setMonth={setMonth} year={year} setYear={setYear} setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
 
+  
 
       <Modal
         open={openEditModal}

@@ -27,6 +27,9 @@ import { getTotalDashboard } from 'src/redux/apiRequest';
 export default function DashboardAppPage() {
   const [valueDate, setValueDate] = useState("")
   const [typeDate,setTypeDate] = useState("month")
+  const [month,setMonth] = useState('Month')
+  const [year,setYear] = useState('Year')
+
 
   const user = useSelector((state)=>state.user.login?.currentUser)
   const count = useSelector((state)=>state.bill.totalDashboard.total)
@@ -41,20 +44,30 @@ export default function DashboardAppPage() {
 
     const payload = {
       date: valueDate,
-      type: typeDate
+      month:month,
+      year:year
     }
     console.log(payload);
     getTotalDashboard(dispatch,payload)
-  },[valueDate,typeDate])
+  },[valueDate,year,month])
 
   const handleChangeDate = (e) => {
     setValueDate(e.target.value);
+    setMonth('Month')
+    setYear('Year')
   };
 
   const handleChange = (e) =>{
     setTypeDate(e.target.value)
   }
-
+  const handleChangeMonth = e =>{
+    setMonth(e.target.value)
+    setValueDate("")
+  }
+  const handleChangeYear = e =>{
+    setYear(e.target.value)
+    setValueDate("")
+  }
   return (
     <>
       <Helmet>
@@ -74,9 +87,36 @@ export default function DashboardAppPage() {
                 InputLabelProps={{ shrink: true }}
                 sx={{ width: 220,marginRight:5 }}
               />
-                <Select style={{ marginBottom: 20 }} value={typeDate} onChange={handleChange}>
-                <MenuItem value={'year'}>year</MenuItem>
-                <MenuItem value={'month'}>month</MenuItem>
+            
+              <Select style={{ marginBottom: 20,marginRight:10 }}  value={month} onChange={handleChangeMonth}>
+                <MenuItem value={'Month'}>Month</MenuItem>
+                <MenuItem value={'01'}>Tháng 1</MenuItem>
+                <MenuItem value={'02'}>Tháng 2</MenuItem>
+                <MenuItem value={'03'}>Tháng 3</MenuItem>
+                <MenuItem value={'04'}>Tháng 4</MenuItem>
+                <MenuItem value={'05'}>Tháng 5</MenuItem>
+                <MenuItem value={'06'}>Tháng 6</MenuItem>
+                <MenuItem value={'07'}>Tháng 7</MenuItem>
+                <MenuItem value={'08'}>Tháng 8</MenuItem>
+                <MenuItem value={'09'}>Tháng 9</MenuItem>
+                <MenuItem value={'10'}>Tháng 10</MenuItem>
+                <MenuItem value={'11'}>Tháng 11</MenuItem>
+                <MenuItem value={'12'}>Tháng 12</MenuItem>
+              </Select>
+              
+              <Select style={{ marginBottom: 20 }} value={year} onChange={handleChangeYear}>
+                <MenuItem value={'Year'}>Year</MenuItem>
+                <MenuItem value={'2021'}>2021</MenuItem>
+                <MenuItem value={'2022'}>2022</MenuItem>
+                <MenuItem value={'2023'}>2023</MenuItem>
+                <MenuItem value={'2024'}>2024</MenuItem>
+                <MenuItem value={'2025'}>2025</MenuItem>
+                <MenuItem value={'2026'}>2026</MenuItem>
+                <MenuItem value={'2027'}>2027</MenuItem>
+                <MenuItem value={'2028'}>2028</MenuItem>
+                <MenuItem value={'2029'}>2029</MenuItem>
+                <MenuItem value={'2030'}>2030</MenuItem>
+               
                 
               </Select>
 

@@ -27,8 +27,10 @@ const ModalViewOrderUser = ({
   valueDate,
   setTypeDate,
   typeDate,
+  month,setMonth,year,setYear
 }) => {
   const billUser = useSelector((state) => state.bill.billUserActive.userBill);
+
 
   console.log(typeDate);
   const dispatch = useDispatch();
@@ -43,16 +45,28 @@ const ModalViewOrderUser = ({
   useEffect(() => {
     const payload = {
       date: valueDate,
-      type: typeDate,
+      month:month,
+      year:year,
     };
     if (dataUser) {
       getAllBillUser(token, dispatch, dataUser?._id, payload);
     }
-  }, [dataUser, valueDate,typeDate]);
+  }, [dataUser, valueDate,typeDate,month,year]);
 
   const handleChange = (e) =>{
     setTypeDate(e.target.value)
   }
+
+  
+  const handleChangeMonth = e =>{
+    setMonth(e.target.value)
+    setValueDate("")
+  }
+  const handleChangeYear = e =>{
+    setYear(e.target.value)
+    setValueDate("")
+  }
+
   return (
     <Modal
       open={openViewOrderModal}
@@ -75,9 +89,36 @@ const ModalViewOrderUser = ({
                 InputLabelProps={{ shrink: true }}
                 sx={{ width: 220,marginRight:5 }}
               />
-              <Select style={{ marginBottom: 20 }} value={typeDate} onChange={handleChange}>
-                <MenuItem value={'day'}>day</MenuItem>
-                <MenuItem value={'month'}>month</MenuItem>
+             
+              <Select style={{ marginBottom: 20,marginRight:10 }}  value={month} onChange={handleChangeMonth}>
+                <MenuItem value={'Month'}>Month</MenuItem>
+                <MenuItem value={'01'}>Tháng 1</MenuItem>
+                <MenuItem value={'02'}>Tháng 2</MenuItem>
+                <MenuItem value={'03'}>Tháng 3</MenuItem>
+                <MenuItem value={'04'}>Tháng 4</MenuItem>
+                <MenuItem value={'05'}>Tháng 5</MenuItem>
+                <MenuItem value={'06'}>Tháng 6</MenuItem>
+                <MenuItem value={'07'}>Tháng 7</MenuItem>
+                <MenuItem value={'08'}>Tháng 8</MenuItem>
+                <MenuItem value={'09'}>Tháng 9</MenuItem>
+                <MenuItem value={'10'}>Tháng 10</MenuItem>
+                <MenuItem value={'11'}>Tháng 11</MenuItem>
+                <MenuItem value={'12'}>Tháng 12</MenuItem>
+              </Select>
+              
+              <Select style={{ marginBottom: 20 }} value={year} onChange={handleChangeYear}>
+                <MenuItem value={'Year'}>Year</MenuItem>
+                <MenuItem value={'2021'}>2021</MenuItem>
+                <MenuItem value={'2022'}>2022</MenuItem>
+                <MenuItem value={'2023'}>2023</MenuItem>
+                <MenuItem value={'2024'}>2024</MenuItem>
+                <MenuItem value={'2025'}>2025</MenuItem>
+                <MenuItem value={'2026'}>2026</MenuItem>
+                <MenuItem value={'2027'}>2027</MenuItem>
+                <MenuItem value={'2028'}>2028</MenuItem>
+                <MenuItem value={'2029'}>2029</MenuItem>
+                <MenuItem value={'2030'}>2030</MenuItem>
+               
                 
               </Select>
         </div>

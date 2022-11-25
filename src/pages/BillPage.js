@@ -106,6 +106,8 @@ export default function BillPage() {
   const [idEdit, setIdEdit] = useState();
   const [valueDate,setValueDate] = useState()
   const [typeDate,setTypeDate] = useState("month")
+  const [month,setMonth] = useState('Month')
+  const [year,setYear] = useState('Year')
   
   const [open, setOpen] = useState(null);
 
@@ -189,13 +191,14 @@ export default function BillPage() {
   useEffect(() => {
     const payload = {
       date:valueDate,
-      type: typeDate
+      month:month,
+      year:year
     }
     if (!user) {
       navigate('/login')
     }
     getAllBill(user.accessToken, dispatch,payload);
-  }, [openEditModal,valueDate,typeDate]);
+  }, [openEditModal,valueDate,typeDate,month,year]);
 
   const handleOpenEditModal = (item) => {
     setOpenEditModal(true);
@@ -224,10 +227,18 @@ export default function BillPage() {
     const handleChangeDate = (e) => {
         setValueDate(e.target.value);
     }
-    const handleChangeType = (e) =>{
-      setTypeDate(e.target.value)
-    }
+
     
+    
+  const handleChangeMonth = e =>{
+    setMonth(e.target.value)
+    setValueDate("")
+  }
+  const handleChangeYear = e =>{
+    setYear(e.target.value)
+    setValueDate("")
+  }
+
   return (
     <>
       <Helmet>
@@ -241,11 +252,39 @@ export default function BillPage() {
           </Typography>
           <div style={{display:'flex', flexDirection:'row'}}>
             <TextField onChange={handleChangeDate} defaultValue={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
-            <Select style={{ marginBottom: 20 }} value={typeDate} onChange={handleChangeType}>
-                  <MenuItem value={'year'}>year</MenuItem>
-                  <MenuItem value={'month'}>month</MenuItem>
-                  <MenuItem value={'day'}>day</MenuItem>
-                </Select>
+
+                <Select style={{ marginBottom: 20,marginRight:10 }}  value={month} onChange={handleChangeMonth}>
+                <MenuItem value={'Month'}>Month</MenuItem>
+                <MenuItem value={'01'}>Tháng 1</MenuItem>
+                <MenuItem value={'02'}>Tháng 2</MenuItem>
+                <MenuItem value={'03'}>Tháng 3</MenuItem>
+                <MenuItem value={'04'}>Tháng 4</MenuItem>
+                <MenuItem value={'05'}>Tháng 5</MenuItem>
+                <MenuItem value={'06'}>Tháng 6</MenuItem>
+                <MenuItem value={'07'}>Tháng 7</MenuItem>
+                <MenuItem value={'08'}>Tháng 8</MenuItem>
+                <MenuItem value={'09'}>Tháng 9</MenuItem>
+                <MenuItem value={'10'}>Tháng 10</MenuItem>
+                <MenuItem value={'11'}>Tháng 11</MenuItem>
+                <MenuItem value={'12'}>Tháng 12</MenuItem>
+              </Select>
+              
+              <Select style={{ marginBottom: 20 }} value={year} onChange={handleChangeYear}>
+                <MenuItem value={'Year'}>Year</MenuItem>
+                <MenuItem value={'2021'}>2021</MenuItem>
+                <MenuItem value={'2022'}>2022</MenuItem>
+                <MenuItem value={'2023'}>2023</MenuItem>
+                <MenuItem value={'2024'}>2024</MenuItem>
+                <MenuItem value={'2025'}>2025</MenuItem>
+                <MenuItem value={'2026'}>2026</MenuItem>
+                <MenuItem value={'2027'}>2027</MenuItem>
+                <MenuItem value={'2028'}>2028</MenuItem>
+                <MenuItem value={'2029'}>2029</MenuItem>
+                <MenuItem value={'2030'}>2030</MenuItem>
+               
+                
+              </Select>
+
           </div>
           <Typography variant="h5" gutterBottom>
             Total: {allBill?.total}
