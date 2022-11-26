@@ -158,7 +158,10 @@ const ModalViewOrderUser = ({
                     <div style={{ fontWeight: 600, width: 'inherit', color: '#1f6991' }}>Done!</div>
                   ) : item.status === 'HUY_DON' ? (
                     <div style={{ fontWeight: 600, width: 'inherit', color: 'red' }}>Drop bill</div>
-                  ) : (
+                  ) : item.status ==='DA_THANH_TOAN' ? (
+                    <div style={{ fontWeight: 600, width: 'inherit', color: '#308e53' }}>Taked money</div>
+                  )
+                  : (
                     <div>not status</div>
                   )}
                 </div>

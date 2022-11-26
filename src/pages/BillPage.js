@@ -47,6 +47,8 @@ const TABLE_HEAD = [
   { id: 'price', label: 'Price', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'order', label: 'Order User', alignRight: false },
+  { id: 'takeMoney', label: 'Take money', alignRight: false },
+  { id: 'placed', label: 'User placed', alignRight: false },
   { id: 'chef', label: 'Chef', alignRight: false },
   { id: '' },
 ];
@@ -333,11 +335,16 @@ export default function BillPage() {
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#1f6991' }}>Done!</div>
                               : item.status === "HUY_DON" 
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: 'red' }}>Drop bill</div>
-                              : <div>not status</div>
+                              : item.status === "DA_THANH_TOAN"
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#308e53' }}>Taked money</div>
+                              :<div>not status</div>
                                   }
                         </TableCell>
 
                         <TableCell align="left">{item.user?.username}</TableCell>
+                        <TableCell align="left">{item.userTakeMoney?.username}</TableCell>
+                        <TableCell align="left">{item.userPlaced?.username}</TableCell>
+
                         <TableCell align="left">{item.chefActive?.username}</TableCell>
 
 
