@@ -48,6 +48,8 @@ const TABLE_HEAD = [
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'phone', label: 'Phone', alignRight: false },
+  { id: 'stage', label: 'Stage', alignRight: false },
+
   // { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
@@ -112,6 +114,8 @@ export default function UserPage() {
   const [role, setRole] = useState()
   const [username, setUsername] = useState()
   const [phone, setPhone] = useState()
+  const [stage, setStage] = useState()
+
   const [idEdit, setIdEdit] = useState();
 
   const [open, setOpen] = useState(null);
@@ -217,12 +221,16 @@ export default function UserPage() {
   const handleChangeRole = (e) => {
     setRole(e.target.value);
   }
+  const handleChangeStage = (e) => {
+    setStage(e.target.value);
+  }
 
   const handleUpdate = () => {
     const newUpdate = {
       username,
       role,
-      phone
+      phone,
+      stage,
     }
     updateUser(idEdit, user.accessToken, newUpdate, dispatch)
     setOpenEditModal(false)
@@ -279,6 +287,9 @@ export default function UserPage() {
                         <TableCell align="left">{item.role}</TableCell>
 
                         <TableCell align="left">{item.phone}</TableCell>
+                        
+                        <TableCell align="left">{item.stage}</TableCell>
+
 
                         <TableCell align="right" style={{ flexDirection: 'row' }}>
                           <div style={{ flexDirection: 'row', display: 'flex' }}>
@@ -426,6 +437,18 @@ export default function UserPage() {
             style={{ paddingBottom: 20 }}
             onChange={(e) => setPhone(e.target.value)}
           />
+          
+           <div style={{ paddingBottom: 20 }}>
+            <Select
+              value={stage}
+              label="Stage"
+              onChange={handleChangeStage}
+            >
+              <MenuItem value={'STAGE_1'}>Khu 1</MenuItem>
+              <MenuItem value={'STAGE_2'}>khu 2</MenuItem>
+              <MenuItem value={'STAGE_3'}>khu 3</MenuItem>
+            </Select>
+          </div>
           <Button variant='contained' onClick={handleUpdate}>Save</Button>
         </Box>
       </Modal>
