@@ -38,9 +38,7 @@ const ModalViewOrderUser = ({
     handleClose();
   };
 
-  const handleChangeDate = (e) => {
-    setValueDate(e.target.value);
-  };
+
 
   useEffect(() => {
     const payload = {
@@ -53,11 +51,13 @@ const ModalViewOrderUser = ({
     }
   }, [dataUser, valueDate,typeDate,month,year]);
 
-  const handleChange = (e) =>{
-    setTypeDate(e.target.value)
-  }
-
   
+  const handleChangeDate = (e) => {
+    setValueDate(e.target.value);
+    setMonth('Month')
+    setYear('Year')
+
+  };
   const handleChangeMonth = e =>{
     setMonth(e.target.value)
     setValueDate("")
@@ -82,7 +82,7 @@ const ModalViewOrderUser = ({
         <div style={{display:'flex', flexDirection:'row'}}>
               <TextField
                 onChange={handleChangeDate}
-                defaultValue={valueDate}
+                value={valueDate}
                 id="date"
                 label="time"
                 type="date"

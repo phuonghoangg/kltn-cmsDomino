@@ -228,6 +228,8 @@ export default function BillPage() {
 
     const handleChangeDate = (e) => {
         setValueDate(e.target.value);
+        setMonth('Month')
+        setYear('Year')
     }
 
     
@@ -253,7 +255,7 @@ export default function BillPage() {
             All Bill
           </Typography>
           <div style={{display:'flex', flexDirection:'row'}}>
-            <TextField onChange={handleChangeDate} defaultValue={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
+            <TextField onChange={handleChangeDate} value={valueDate} id="date" label="search with month" type="date" InputLabelProps={{ shrink: true }} sx={{ width: 220 }} />
 
                 <Select style={{ marginBottom: 20,marginRight:10 }}  value={month} onChange={handleChangeMonth}>
                 <MenuItem value={'Month'}>Month</MenuItem>
@@ -341,7 +343,7 @@ export default function BillPage() {
                                   }
                         </TableCell>
 
-                        <TableCell align="left">{item.user?.username}</TableCell>
+                        <TableCell align="left">{item.userActive?.username}</TableCell>
                         <TableCell align="left">{item.userTakeMoney?.username}</TableCell>
                         <TableCell align="left">{item.userPlaced?.username}</TableCell>
 

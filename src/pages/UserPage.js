@@ -373,7 +373,6 @@ export default function UserPage() {
 
 
       {/* Modal */}
-
       <ModalViewOrderUser month={month} setMonth={setMonth} year={year} setYear={setYear} setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
 
   

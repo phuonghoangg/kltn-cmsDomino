@@ -62,11 +62,11 @@ export default function DashboardAppPage() {
   }
   const handleChangeMonth = e =>{
     setMonth(e.target.value)
-    setValueDate("")
+    setValueDate(" ")
   }
   const handleChangeYear = e =>{
     setYear(e.target.value)
-    setValueDate("")
+    setValueDate(" ")
   }
   return (
     <>
@@ -80,7 +80,7 @@ export default function DashboardAppPage() {
         </Typography>
         <TextField
                 onChange={handleChangeDate}
-                defaultValue={valueDate}
+                value={valueDate}
                 id="date"
                 label="time"
                 type="date"
