@@ -33,6 +33,7 @@ export default function DashboardAppPage() {
 
   const user = useSelector((state)=>state.user.login?.currentUser)
   const count = useSelector((state)=>state.bill.totalDashboard.total)
+  console.log(count?.chartProduct);
   console.log(count);
   const theme = useTheme();
   const navigate = useNavigate()
@@ -139,18 +140,18 @@ export default function DashboardAppPage() {
               title="Order"
               subheader="total order by month"
               chartLabels={[
-                '01/01/2022',
-                '02/01/2022',
-                '03/01/2022',
-                '04/01/2022',
-                '05/01/2022',
-                '06/01/2022',
-                '07/01/2022',
-                '08/01/2022',
-                '09/01/2022',
-                '10/01/2022',
-                '11/01/2022',
-                '12/01/2022',
+                '01/2022',
+                '02/2022',
+                '03/2022',
+                '04/2022',
+                '05/2022',
+                '06/2022',
+                '07/2022',
+                '08/2022',
+                '09/2022',
+                '10/2022',
+                '11/2022',
+                '12/2022',
               ]}
               // line,arena,column
               chartData={[
@@ -159,6 +160,23 @@ export default function DashboardAppPage() {
                   type: 'column', 
                   fill: 'solid',
                   data: count?.arrChart,
+                },
+               
+              ]}
+            />
+          </Grid>
+          <Grid item xs={12} md={6} lg={12}>
+            <AppWebsiteVisits
+              title="Product Selling"
+              subheader="total product sell"
+              chartLabels={count?.chartProduct?.name}
+              // line,arena,column
+              chartData={[
+                {
+                  name: '',
+                  type: 'column', 
+                  fill: 'solid',
+                  data: count?.chartProduct?.total,
                 },
                
               ]}

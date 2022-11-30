@@ -92,12 +92,14 @@ export const getTotalDashboard = async (dispatch,payload)=>{
         const countUser = await axios.get(`${host}/v1/user/count-user`)
         const countProduct = await axios.get(`${host}/v2/product/count-product`)
         const countBill = await axios.post(`${host}/v3/bill/total-price`,payload)
+        const chartProduct = await axios.get(`${host}/v2/product/total-sell-product`)
 
         let data = {
             countUser: countUser.data,
             countProduct:countProduct.data,
             countBill:countBill.data,
-            arrChart: arrChart.data
+            arrChart: arrChart.data,
+            chartProduct:chartProduct.data
         }
         console.log(arrChart.data);
         dispatch(getTotalDashboardSuccess(data))
