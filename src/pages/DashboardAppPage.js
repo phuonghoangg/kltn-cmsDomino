@@ -57,9 +57,6 @@ export default function DashboardAppPage() {
     setYear('Year')
   };
 
-  const handleChange = (e) =>{
-    setTypeDate(e.target.value)
-  }
   const handleChangeMonth = e =>{
     setMonth(e.target.value)
     setValueDate(" ")

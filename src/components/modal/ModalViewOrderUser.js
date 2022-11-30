@@ -25,7 +25,6 @@ const ModalViewOrderUser = ({
   handleClose,
   setValueDate,
   valueDate,
-  setTypeDate,
   typeDate,
   month,setMonth,year,setYear
 }) => {
@@ -126,6 +125,7 @@ const ModalViewOrderUser = ({
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <p style={{ fontWeight: 600, color: '#ee7638' }}>Total Bill: {billUser?.total} </p>
           <p style={{ fontWeight: 600, color: '#ee7638' }}>All Price: {billUser?.price}</p>
+          {/* {billUser.isBonus == true ? <p>thưởng</p> : <p>Phạt</p>} */}
         </div>
         <div style={{ flexDirection: 'row', display: 'flex', paddingBottom: 7, borderBottom: '1px solid #bec1c7' }}>
           <div style={{ width: 150, color: '#A0AEC0', fontWeight: 600 }}>Table</div>

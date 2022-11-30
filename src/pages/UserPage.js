@@ -200,7 +200,7 @@ export default function UserPage() {
     if (!user) {
       navigate('/login')
     }
-    getAllUser(user.accessToken, dispatch);
+    getAllUser(user?.accessToken, dispatch);
   }, [openEditModal]);
 
   const handleOpenEditModal = (item) => {
@@ -232,7 +232,7 @@ export default function UserPage() {
       phone,
       stage,
     }
-    updateUser(idEdit, user.accessToken, newUpdate, dispatch)
+    updateUser(idEdit, user?.accessToken, newUpdate, dispatch)
     setOpenEditModal(false)
   }
   const handleOpenOrder = (item) => {
@@ -384,7 +384,7 @@ export default function UserPage() {
 
 
       {/* Modal */}
-      <ModalViewOrderUser month={month} setMonth={setMonth} year={year} setYear={setYear} setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
+      <ModalViewOrderUser month={month} setMonth={setMonth} year={year} setYear={setYear} setTypeDate={setTypeDate} typeDate={typeDate} setValueDate={setValueDate} valueDate={valueDate} token={user?.accessToken} dataUser={userViewOrder} openViewOrderModal={openViewOrderModal} handleClose={handleClose} />
 
   
 
@@ -440,7 +440,7 @@ export default function UserPage() {
           
            <div style={{ paddingBottom: 20 }}>
             <Select
-              value={stage}
+              value={userEdit?.stage}
               label="Stage"
               onChange={handleChangeStage}
             >
