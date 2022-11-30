@@ -337,7 +337,9 @@ export default function BillPage() {
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#1f6991' }}>Done!</div>
                               : item.status === "HUY_DON" 
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: 'red' }}>Drop bill</div>
-                              : ((item.status === "FAIL_BILL" || item.status === "DA_THANH_TOAN") && item.isFailBill == true)
+                              : (( item.status === "DA_THANH_TOAN") && item.isFailBill == true)
+                              ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#f0cb54' }}>Bill fail taked money</div>
+                              : ((item.status === "FAIL_BILL" && item.status !== "DA_THANH_TOAN") && item.isFailBill == true)
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#f0cb54' }}>Bill đền</div>
                               : item.status === "DA_THANH_TOAN"
                               ? <div style={{ paddingTop: 7, paddingBottom: 7, fontWeight: 600, width: 'inherit',  color: '#308e53' }}>Taked money</div>
