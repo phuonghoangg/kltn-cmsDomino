@@ -356,9 +356,9 @@ export default function BillPage() {
 
                         <TableCell align="right" style={{ flexDirection: 'row' }}>
                           <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'space-around' }}>
-                            <Button variant="outlined" onClick={() => handleOpenEditModal(item)}>
+                            {/* <Button variant="outlined" onClick={() => handleOpenEditModal(item)}>
                               Edit
-                            </Button>
+                            </Button> */}
 
                           </div>
                        
